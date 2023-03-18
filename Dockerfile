@@ -8,6 +8,7 @@ ARG OPENTELEMETRY_JAVA_AGENT_VERSION=1.17.0
 RUN curl -LSsO https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OPENTELEMETRY_JAVA_AGENT_VERSION}/opentelemetry-javaagent.jar
 
 # Download dependencies
+COPY /src/main/extras/spark/* /code/src/main/extras/spark/
 COPY pom.xml /code/
 RUN mkdir .git \
     && mvn package \
