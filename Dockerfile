@@ -8,13 +8,15 @@ ARG OPENTELEMETRY_JAVA_AGENT_VERSION=1.17.0
 RUN curl -LSsO https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OPENTELEMETRY_JAVA_AGENT_VERSION}/opentelemetry-javaagent.jar
 
 # Download dependencies
+COPY ./src/main/extras/spark/* /code/src/main/extras/spark/
+RUN mvn install:install-file -Dfile=/code/src/main/extras/spark/spark-2.6.22.jar -DgroupId=com.simba -DartifactId=spark -Dversion=2.6.22 -Dpackaging=jar -DgeneratePom=true
 COPY pom.xml /code/
 RUN mkdir .git \
     && mvn package \
      -P${MAVEN_PROFILE}
 
-ARG GIT_BRANCH=unknown
-ARG GIT_COMMIT_ID_ABBREV=unknown
+ARG GIT_BRANCH=databricks-test
+ARG GIT_COMMIT_ID_ABBREV=6cdb4bce
 
 # Compile code and repackage it
 COPY src /code/src

@@ -1333,6 +1333,9 @@
         <security.db.datasource.password>${datasource.password}</security.db.datasource.password>
         <security.db.datasource.authenticationQuery>select password from ${security.db.datasource.schema}.users_data where \
           lower(email) = lower(?)</security.db.datasource.authenticationQuery>
+        <spark.enabled>true</spark.enabled>
+        <!-- Spark JDBC driver path -->
+        <spark.classpath>${basedir}/src/main/extras/spark</spark.classpath>
       </properties>
       <repositories>
         <repository>
@@ -1342,9 +1345,41 @@
         <repository>
           <id>ohdsi</id>
           <name>repo.ohdsi.org</name>
-          <url>http://repo.ohdsi.org:8085/nexus/content/groups/public</url>
+          <url>http://repo.ohdsi.org:8085/nexus/content/groups/public/</url>
         </repository>
       </repositories>
+      <dependencies>
+        <dependency>
+          <groupId>com.simba</groupId>
+          <artifactId>spark</artifactId>
+          <version>2.6.22</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>2.5.2</version>
+            <executions>
+              <execution>
+                <id>spark-jdbc</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>install-file</goal>
+                </goals>
+                <configuration>
+                  <groupId>com.simba</groupId>
+                  <artifactId>spark</artifactId>
+                  <version>2.6.22</version>
+                  <packaging>jar</packaging>
+                  <file>${spark.classpath}/spark-2.6.22.jar</file>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>webapi-mssql</id>
@@ -1456,13 +1491,13 @@
       <properties>
         <spark.enabled>true</spark.enabled>
         <!-- Spark JDBC driver path -->
-        <spark.classpath>${basedir}/src/main/extras/spark</spark.classpath>
+        <spark.classpath>${basedir}/src/main/extras/spark/</spark.classpath>
       </properties>
       <dependencies>
         <dependency>
           <groupId>com.simba</groupId>
           <artifactId>spark</artifactId>
-          <version>2.6.22.1040</version>
+          <version>2.6.22</version>
         </dependency>
       </dependencies>
       <build>
@@ -1483,7 +1518,7 @@
                   <artifactId>spark</artifactId>
                   <version>2.6.22.1040</version>
                   <packaging>jar</packaging>
-                  <file>${spark.classpath}/spark-2.6.22.1040.jar</file>
+                  <file>${spark.classpath}/spark-2.6.22.jar</file>
                 </configuration>
               </execution>
             </executions>
